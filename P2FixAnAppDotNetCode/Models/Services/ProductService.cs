@@ -1,4 +1,10 @@
-﻿using P2FixAnAppDotNetCode.Models.Repositories;
+﻿using P2FixAnAppDotNetCode.Controllers;
+using P2FixAnAppDotNetCode.Models.Repositories;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+//using System.Security.Cryptography.X509Certificates;
 
 namespace P2FixAnAppDotNetCode.Models.Services
 {
@@ -23,7 +29,12 @@ namespace P2FixAnAppDotNetCode.Models.Services
         {
             // TODO change the return type from array to List<T> and propagate the change
             // throughout the application
-            return _productRepository.GetAllProducts();
+            // Get the array from ProductRepository.cs
+            Product[] products = _productRepository.GetAllProducts();
+            // Convert to a list and propagate
+            // Old version products.ToList();
+            products.ToList<Product>();
+            return products;
         }
 
         /// <summary>
@@ -32,6 +43,16 @@ namespace P2FixAnAppDotNetCode.Models.Services
         public Product GetProductById(int id)
         {
             // TODO implement the method
+            Product[] products = GetAllProducts();
+
+            foreach (Product product in products)
+            {
+                if (product.Id == id)
+                {
+                    return product;
+                }
+            }
+
             return null;
         }
 
@@ -42,6 +63,11 @@ namespace P2FixAnAppDotNetCode.Models.Services
         {
             // TODO implement the method
             // update product inventory by using _productRepository.UpdateProductStocks() method.
+            foreach (var cartLine in cart.GetCartLineList())
+            {
+                int quantityToRemove = cartLine.Quantity;
+                _productRepository.UpdateProductStocks(cartLine.Product.Id, quantityToRemove);
+            }
         }
     }
 }
