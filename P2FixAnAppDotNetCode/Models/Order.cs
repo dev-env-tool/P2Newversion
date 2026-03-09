@@ -12,18 +12,18 @@ namespace P2FixAnAppDotNetCode.Models
         [BindNever]
         public ICollection<CartLine> Lines { get; set; }
 
-        [Required(ErrorMessage = "ErrorMissingName")]
+        [Required(ErrorMessageResourceType = typeof(Resources.Models.ViewModels.Order),ErrorMessageResourceName = "ErrorMissingName")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "ErrorMissingAddress")]
+        [Required(ErrorMessageResourceType = typeof(Resources.Models.ViewModels.Order), ErrorMessageResourceName = "ErrorMissingAddress")]
         public string Address { get; set; }
 
-        [Required(ErrorMessage = "ErrorMissingCity")]
+        [Required(ErrorMessageResourceType = typeof(Resources.Models.ViewModels.Order), ErrorMessageResourceName = "ErrorMissingCity")]
         public string City { get; set; }
 
         public string Zip { get; set; }
 
-        [Required(ErrorMessage = "ErrorMissingCountry")]
+        [Required(ErrorMessageResourceType = typeof(Resources.Models.ViewModels.Order), ErrorMessageResourceName = "ErrorMissingCountry")]
         public string Country { get; set; }
 
         [BindNever]
