@@ -51,9 +51,9 @@ namespace P2FixAnAppDotNetCode.Models
             //If the item is already into the cart, add 1 to the quantity
             if (cartLine != null)
             {
-                if (product.Stock < (quantity + cartLine.Quantity))
+                if (product.Stock <= (quantity + cartLine.Quantity))
                 {
-                    cartLine.Quantity += product.Stock;
+                    cartLine.Quantity = product.Stock;
                 }
                 else
                 {
@@ -64,7 +64,7 @@ namespace P2FixAnAppDotNetCode.Models
             }
             else
             {
-                if (product.Stock < quantity)
+                if (product.Stock <= quantity)
                 {
                     quantityToAdd = product.Stock;
                 }
