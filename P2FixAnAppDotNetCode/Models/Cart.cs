@@ -57,6 +57,7 @@ namespace P2FixAnAppDotNetCode.Models
                 }
                 else
                 {
+                    quantityToAdd = quantity; //Mod for automated tests : allows to add more than 1 product in one step (click)
                     cartLine.Quantity += quantityToAdd;
                 }
                 return;
@@ -67,6 +68,7 @@ namespace P2FixAnAppDotNetCode.Models
                 {
                     quantityToAdd = product.Stock;
                 }
+                quantityToAdd = quantity; //Mod for automated tests : allows to add more than 1 product in one step (click)
                 AddLine(new CartLine(i++, product, quantityToAdd));
                 return;
             }

@@ -16,6 +16,7 @@ namespace P2FixAnAppDotNetCode.Tests
         public void AddItemInCart()
         {
             Cart cart = new Cart();
+            //Impossible, as now the GenerateProductData() is private and not available in IProductRepository
             Product product1 = new Product(1, 0, 20, "name", "description");
             Product product2 = new Product(1, 0, 20, "name", "description");
 
@@ -39,7 +40,7 @@ namespace P2FixAnAppDotNetCode.Tests
             cart.AddItem(products.First(p => p.Id == 2), 2);
             cart.AddItem(products.First(p => p.Id == 5), 1);
             double averageValue = cart.GetAverageValue();
-            double expectedValue = (9.99 * 2 + 895.00) / 3;
+            double expectedValue = ((9.99 * 2) + 895.00) / 3;
 
             Assert.Equal(expectedValue, averageValue);
         }
@@ -66,10 +67,16 @@ namespace P2FixAnAppDotNetCode.Tests
         public void FindProductInCartLines()
         {
             Cart cart = new Cart();
+            IProductRepository productRepository = new ProductRepository();
+            IOrderRepository orderRepository = new OrderRepository();
+            IProductService productService = new ProductService(productRepository, orderRepository);
+
+            IEnumerable<Product> products = productService.GetAllProducts();
+            //Impossible, as now the GenerateProductData() is private and not available in IProductRepository
             Product product = new Product(999, 0, 20, "name", "description");
 
             cart.AddItem(product, 1);
-            Product result = cart.FindProductInCartLines(999);
+            var result = cart.FindProductInCartLines(999);
 
             Assert.NotNull(result);
         }

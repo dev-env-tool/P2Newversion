@@ -36,11 +36,14 @@ namespace P2FixAnAppDotNetCode.Tests
             IProductService productService = new ProductService(productRepository, orderRepository);
 
             IEnumerable<Product> products = productService.GetAllProducts();
+
+
             cart.AddItem(products.Where(p => p.Id == 1).First(), 1);
             cart.AddItem(products.Where(p => p.Id == 3).First(), 2);
             cart.AddItem(products.Where(p => p.Id == 5).First(), 3);
 
             productService.UpdateProductQuantities(cart);
+            cart.Clear();
 
             Assert.Equal(9, products.Where(p => p.Id == 1).First().Stock);
             Assert.Equal(28, products.Where(p => p.Id == 3).First().Stock);
