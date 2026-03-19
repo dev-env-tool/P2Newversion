@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using P2FixAnAppDotNetCode.Models;
 using P2FixAnAppDotNetCode.Models.Repositories;
 using P2FixAnAppDotNetCode.Models.Services;
@@ -16,10 +18,37 @@ namespace P2FixAnAppDotNetCode.Tests
         public void AddItemInCart()
         {
             Cart cart = new Cart();
-            //Impossible, as now the GenerateProductData() is private and not available in IProductRepository
-            Product product1 = new Product(1, 0, 20, "name", "description");
-            Product product2 = new Product(1, 0, 20, "name", "description");
+            IProductRepository productRepository = new ProductRepository();
+            IOrderRepository orderRepository = new OrderRepository();
+            IProductService productService = new ProductService(productRepository, orderRepository);
 
+            /// <summary>
+            /// Use of reflection Method to access, modify and inject a private element into test functions.
+            /// The app logic is then not modified.
+            /// Use of a var to retrieve the private list _products
+            /// </summary>
+            var accessList = typeof(ProductRepository).GetField("_products", BindingFlags.NonPublic | BindingFlags.Static);
+
+            /// <summary>
+            /// Create a new var which will store the private _products list after products generation
+            /// Then this var is used into the test.
+            /// </summary>
+            var ProductsList = (List<Product>)accessList.GetValue(productRepository);
+
+            var product1 = new Product(1, 10, 20, "name", "description");
+            var product2 = new Product(1, 10, 20, "name", "description");
+
+            /// <summary>
+            /// Then this var is used into the test.
+            /// And is then reinjected as _products (reflection) into the other functions used into the test : FindProductInCartLines()
+            /// </summary>
+            ProductsList.Add(product1);
+            ProductsList.Add(product2);
+
+
+            /// <summary>
+            /// Here implicitely : _products = ProductsList
+            /// </summary>
             cart.AddItem(product1, 1);
             cart.AddItem(product2, 1);
 
@@ -72,10 +101,35 @@ namespace P2FixAnAppDotNetCode.Tests
             IProductService productService = new ProductService(productRepository, orderRepository);
 
             IEnumerable<Product> products = productService.GetAllProducts();
-            //Impossible, as now the GenerateProductData() is private and not available in IProductRepository
-            Product product = new Product(999, 0, 20, "name", "description");
+            
 
-            cart.AddItem(product, 1);
+            /// <summary>
+            /// Use of reflection Method to access, modify and inject a private element into test functions.
+            /// The app logic is then not modified.
+            /// Use of a var to retrieve the private list _products
+            /// </summary>
+            var accessList = typeof(ProductRepository).GetField("_products",BindingFlags.NonPublic | BindingFlags.Static);
+
+            /// <summary>
+            /// Create a new var which will store the private _products list after products generation
+            /// Then this var is used into the test.
+            /// </summary>
+            var ProductsList = (List<Product>)accessList.GetValue(productRepository);
+
+            int id = 999;
+            var testproduct = new Product(id, 10, 20, "name", "description");
+
+            /// <summary>
+            /// Then this var is used into the test.
+            /// And is then reinjected as _products (reflection) into the other functions used into the test : FindProductInCartLines()
+            /// </summary>
+            ProductsList.Add(testproduct);
+
+
+            /// <summary>
+            /// Here implicitely : _products = ProductsList
+            /// </summary>
+            cart.AddItem(testproduct, 1);
             var result = cart.FindProductInCartLines(999);
 
             Assert.NotNull(result);
